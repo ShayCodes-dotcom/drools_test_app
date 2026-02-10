@@ -1,0 +1,15 @@
+com\droolstest\dto\BatchValidationResponse.class
+com\droolstest\dto\ValidationResponse$ValidationDetail.class
+com\droolstest\dto\BatchValidationRequest$TestCase.class
+com\droolstest\config\DroolsConfig.class
+com\droolstest\dto\ValidationRequest.class
+com\droolstest\controller\ValidationController.class
+com\droolstest\rules\ApplicantFact.class
+com\droolstest\dto\BatchValidationResponse$TestCaseResult.class
+com\droolstest\DroolsValidationTestApplication.class
+com\droolstest\rules\ApplicantFact$ValidationResult.class
+com\droolstest\dto\BatchValidationResponse$AssertionResult.class
+com\droolstest\service\ValidationService.class
+com\droolstest\dto\ValidationResponse.class
+com\droolstest\dto\BatchValidationRequest.class
+com\droolstest\dto\BatchValidationRequest$ExpectedResults.class

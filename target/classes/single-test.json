@@ -1,0 +1,20 @@
+{
+  "applicant": {
+    "applicantFirstName": "",
+    "applicantLastName": "Doe",
+    "applicantDateOfBirth": "1990-05-15",
+    "applicantSocialSecurityNumber": "123-45-6789",
+    "applicantAnnualIncome": 75000,
+    "applicantEmploymentStatus": "Full-Time",
+    "applicantEmployerName": "Acme Corp",
+    "applicantStreetAddress": "123 Main Street",
+    "applicantCity": "Baton Rouge",
+    "applicantState": "LA",
+    "applicantZipCode": "70801",
+    "applicantAge": 34,
+    "applicantCreditScore": 750,
+    "applicantDriversLicenseNumber": "DL-9876543",
+    "applicantPassportNumber": null,
+    "applicantStateIdNumber": null
+  }
+}

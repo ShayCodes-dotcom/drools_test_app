@@ -1,0 +1,598 @@
+{
+  "testCases": [
+
+    {
+      "testName": "TC-01: Complete valid applicant - all rules pass",
+      "description": "All fields populated with valid values. Every rule should fire and pass.",
+      "input": {
+        "applicant": {
+          "applicantFirstName": "Jane",
+          "applicantLastName": "Doe",
+          "applicantDateOfBirth": "1990-05-15",
+          "applicantSocialSecurityNumber": "123-45-6789",
+          "applicantAnnualIncome": 75000,
+          "applicantEmploymentStatus": "Full-Time",
+          "applicantEmployerName": "Acme Corp",
+          "applicantStreetAddress": "123 Main Street",
+          "applicantCity": "Baton Rouge",
+          "applicantState": "LA",
+          "applicantZipCode": "70801",
+          "applicantAge": 34,
+          "applicantCreditScore": 750,
+          "applicantDriversLicenseNumber": "DL-9876543",
+          "applicantPassportNumber": null,
+          "applicantStateIdNumber": null
+        }
+      },
+      "expected": {
+        "fullyValid": true,
+        "applicantDataIsValid": true,
+        "applicantIncomeIsVerified": true,
+        "applicantAddressIsComplete": true,
+        "applicantIsEligible": true,
+        "applicantIdentityIsConfirmed": true
+      }
+    },
+
+    {
+      "testName": "TC-02: Empty applicant - no rules pass",
+      "description": "All fields null/absent. No rules should fire.",
+      "input": {
+        "applicant": {}
+      },
+      "expected": {
+        "fullyValid": false,
+        "applicantDataIsValid": false,
+        "applicantIncomeIsVerified": false,
+        "applicantAddressIsComplete": false,
+        "applicantIsEligible": false,
+        "applicantIdentityIsConfirmed": false
+      }
+    },
+
+    {
+      "testName": "TC-03: Personal data only",
+      "description": "Only personal identity fields filled in. Only Rule 1 should pass.",
+      "input": {
+        "applicant": {
+          "applicantFirstName": "John",
+          "applicantLastName": "Smith",
+          "applicantDateOfBirth": "1985-12-01",
+          "applicantSocialSecurityNumber": "987-65-4321"
+        }
+      },
+      "expected": {
+        "fullyValid": false,
+        "applicantDataIsValid": true,
+        "applicantIncomeIsVerified": false,
+        "applicantAddressIsComplete": false,
+        "applicantIsEligible": false,
+        "applicantIdentityIsConfirmed": false
+      }
+    },
+
+    {
+      "testName": "TC-04: Missing first name",
+      "description": "All personal data present except firstName. Rule 1 should fail.",
+      "input": {
+        "applicant": {
+          "applicantFirstName": null,
+          "applicantLastName": "Martinez",
+          "applicantDateOfBirth": "1992-03-20",
+          "applicantSocialSecurityNumber": "555-12-3456"
+        }
+      },
+      "expected": {
+        "applicantDataIsValid": false
+      }
+    },
+
+    {
+      "testName": "TC-05: Missing last name",
+      "description": "All personal data present except lastName. Rule 1 should fail.",
+      "input": {
+        "applicant": {
+          "applicantFirstName": "Maria",
+          "applicantLastName": null,
+          "applicantDateOfBirth": "1988-07-10",
+          "applicantSocialSecurityNumber": "444-55-6666"
+        }
+      },
+      "expected": {
+        "applicantDataIsValid": false
+      }
+    },
+
+    {
+      "testName": "TC-06: Missing date of birth",
+      "description": "All personal data present except DOB. Rule 1 should fail.",
+      "input": {
+        "applicant": {
+          "applicantFirstName": "Alex",
+          "applicantLastName": "Johnson",
+          "applicantDateOfBirth": null,
+          "applicantSocialSecurityNumber": "111-22-3333"
+        }
+      },
+      "expected": {
+        "applicantDataIsValid": false
+      }
+    },
+
+    {
+      "testName": "TC-07: Income zero - verification fails",
+      "description": "Income is 0, which should fail the 'annualIncome > 0' condition.",
+      "input": {
+        "applicant": {
+          "applicantAnnualIncome": 0,
+          "applicantEmploymentStatus": "Unemployed",
+          "applicantEmployerName": "N/A"
+        }
+      },
+      "expected": {
+        "applicantIncomeIsVerified": false
+      }
+    },
+
+    {
+      "testName": "TC-08: Income negative - verification fails",
+      "description": "Negative income should not pass the income rule.",
+      "input": {
+        "applicant": {
+          "applicantAnnualIncome": -5000,
+          "applicantEmploymentStatus": "Self-Employed",
+          "applicantEmployerName": "Freelance"
+        }
+      },
+      "expected": {
+        "applicantIncomeIsVerified": false
+      }
+    },
+
+    {
+      "testName": "TC-09: Income valid but missing employer",
+      "description": "Good income but no employer name. Rule 2 should fail.",
+      "input": {
+        "applicant": {
+          "applicantAnnualIncome": 60000,
+          "applicantEmploymentStatus": "Full-Time",
+          "applicantEmployerName": null
+        }
+      },
+      "expected": {
+        "applicantIncomeIsVerified": false
+      }
+    },
+
+    {
+      "testName": "TC-10: Complete address",
+      "description": "All four address fields present. Rule 3 should pass.",
+      "input": {
+        "applicant": {
+          "applicantStreetAddress": "456 Oak Avenue",
+          "applicantCity": "New Orleans",
+          "applicantState": "LA",
+          "applicantZipCode": "70112"
+        }
+      },
+      "expected": {
+        "applicantAddressIsComplete": true
+      }
+    },
+
+    {
+      "testName": "TC-11: Missing zip code",
+      "description": "Address missing zip code. Rule 3 should fail.",
+      "input": {
+        "applicant": {
+          "applicantStreetAddress": "789 Elm Street",
+          "applicantCity": "Houston",
+          "applicantState": "TX",
+          "applicantZipCode": null
+        }
+      },
+      "expected": {
+        "applicantAddressIsComplete": false
+      }
+    },
+
+    {
+      "testName": "TC-12: Missing city",
+      "description": "Address missing city. Rule 3 should fail.",
+      "input": {
+        "applicant": {
+          "applicantStreetAddress": "100 Pine Road",
+          "applicantCity": null,
+          "applicantState": "CA",
+          "applicantZipCode": "90001"
+        }
+      },
+      "expected": {
+        "applicantAddressIsComplete": false
+      }
+    },
+
+    {
+      "testName": "TC-13: Eligible - meets all criteria",
+      "description": "Age 25, credit 720, income 50000. All thresholds met.",
+      "input": {
+        "applicant": {
+          "applicantAge": 25,
+          "applicantCreditScore": 720,
+          "applicantAnnualIncome": 50000,
+          "applicantEmploymentStatus": "Full-Time",
+          "applicantEmployerName": "Tech Inc"
+        }
+      },
+      "expected": {
+        "applicantIsEligible": true,
+        "applicantIncomeIsVerified": true
+      }
+    },
+
+    {
+      "testName": "TC-14: Underage - not eligible",
+      "description": "Age 17, good credit and income. Eligibility rule should fail.",
+      "input": {
+        "applicant": {
+          "applicantAge": 17,
+          "applicantCreditScore": 800,
+          "applicantAnnualIncome": 100000,
+          "applicantEmploymentStatus": "Part-Time",
+          "applicantEmployerName": "Summer Job LLC"
+        }
+      },
+      "expected": {
+        "applicantIsEligible": false
+      }
+    },
+
+    {
+      "testName": "TC-15: Boundary - exactly 18 years old",
+      "description": "Age exactly 18 (>= 18 threshold). Should be eligible if other criteria met.",
+      "input": {
+        "applicant": {
+          "applicantAge": 18,
+          "applicantCreditScore": 650,
+          "applicantAnnualIncome": 30000,
+          "applicantEmploymentStatus": "Full-Time",
+          "applicantEmployerName": "Entry Level Inc"
+        }
+      },
+      "expected": {
+        "applicantIsEligible": true
+      }
+    },
+
+    {
+      "testName": "TC-16: Boundary - credit score exactly 600",
+      "description": "Credit score is 600. Rule requires > 600 (not >=), so should fail.",
+      "input": {
+        "applicant": {
+          "applicantAge": 30,
+          "applicantCreditScore": 600,
+          "applicantAnnualIncome": 50000
+        }
+      },
+      "expected": {
+        "applicantIsEligible": false
+      }
+    },
+
+    {
+      "testName": "TC-17: Boundary - credit score 601",
+      "description": "Credit score is 601, just above the > 600 threshold.",
+      "input": {
+        "applicant": {
+          "applicantAge": 30,
+          "applicantCreditScore": 601,
+          "applicantAnnualIncome": 50000
+        }
+      },
+      "expected": {
+        "applicantIsEligible": true
+      }
+    },
+
+    {
+      "testName": "TC-18: Boundary - income exactly 25000",
+      "description": "Income is 25000. Rule requires > 25000 (not >=), so should fail.",
+      "input": {
+        "applicant": {
+          "applicantAge": 30,
+          "applicantCreditScore": 700,
+          "applicantAnnualIncome": 25000
+        }
+      },
+      "expected": {
+        "applicantIsEligible": false
+      }
+    },
+
+    {
+      "testName": "TC-19: Identity - drivers license only",
+      "description": "Only DL provided. Rule 5 (OR logic) should pass.",
+      "input": {
+        "applicant": {
+          "applicantDriversLicenseNumber": "DL-1234567",
+          "applicantPassportNumber": null,
+          "applicantStateIdNumber": null
+        }
+      },
+      "expected": {
+        "applicantIdentityIsConfirmed": true
+      }
+    },
+
+    {
+      "testName": "TC-20: Identity - passport only",
+      "description": "Only passport provided. Rule 5 (OR logic) should pass.",
+      "input": {
+        "applicant": {
+          "applicantDriversLicenseNumber": null,
+          "applicantPassportNumber": "P-9999999",
+          "applicantStateIdNumber": null
+        }
+      },
+      "expected": {
+        "applicantIdentityIsConfirmed": true
+      }
+    },
+
+    {
+      "testName": "TC-21: Identity - state ID only",
+      "description": "Only state ID provided. Rule 5 (OR logic) should pass.",
+      "input": {
+        "applicant": {
+          "applicantDriversLicenseNumber": null,
+          "applicantPassportNumber": null,
+          "applicantStateIdNumber": "SID-5555555"
+        }
+      },
+      "expected": {
+        "applicantIdentityIsConfirmed": true
+      }
+    },
+
+    {
+      "testName": "TC-22: Identity - no ID at all",
+      "description": "No identity documents provided. Rule 5 should fail.",
+      "input": {
+        "applicant": {
+          "applicantDriversLicenseNumber": null,
+          "applicantPassportNumber": null,
+          "applicantStateIdNumber": null
+        }
+      },
+      "expected": {
+        "applicantIdentityIsConfirmed": false
+      }
+    },
+
+    {
+      "testName": "TC-23: Identity - multiple IDs",
+      "description": "Both DL and passport provided. Rule 5 should still pass.",
+      "input": {
+        "applicant": {
+          "applicantDriversLicenseNumber": "DL-AAAA",
+          "applicantPassportNumber": "PP-BBBB",
+          "applicantStateIdNumber": null
+        }
+      },
+      "expected": {
+        "applicantIdentityIsConfirmed": true
+      }
+    },
+
+    {
+      "testName": "TC-24: High income but low credit score",
+      "description": "Income 200K but credit 500. Eligible rule should fail on credit.",
+      "input": {
+        "applicant": {
+          "applicantFirstName": "Rich",
+          "applicantLastName": "Person",
+          "applicantDateOfBirth": "1975-01-01",
+          "applicantSocialSecurityNumber": "777-88-9999",
+          "applicantAge": 51,
+          "applicantCreditScore": 500,
+          "applicantAnnualIncome": 200000,
+          "applicantEmploymentStatus": "Full-Time",
+          "applicantEmployerName": "Big Corp"
+        }
+      },
+      "expected": {
+        "applicantDataIsValid": true,
+        "applicantIsEligible": false,
+        "applicantIncomeIsVerified": true
+      }
+    },
+
+    {
+      "testName": "TC-25: Minimum viable applicant",
+      "description": "Applicant with the absolute minimum to pass all 5 rules.",
+      "input": {
+        "applicant": {
+          "applicantFirstName": "Min",
+          "applicantLastName": "Viable",
+          "applicantDateOfBirth": "2008-02-09",
+          "applicantSocialSecurityNumber": "000-00-0001",
+          "applicantAnnualIncome": 25001,
+          "applicantEmploymentStatus": "Part-Time",
+          "applicantEmployerName": "Any",
+          "applicantStreetAddress": "1 A St",
+          "applicantCity": "A",
+          "applicantState": "AL",
+          "applicantZipCode": "00001",
+          "applicantAge": 18,
+          "applicantCreditScore": 601,
+          "applicantDriversLicenseNumber": "X"
+        }
+      },
+      "expected": {
+        "fullyValid": true,
+        "applicantDataIsValid": true,
+        "applicantIncomeIsVerified": true,
+        "applicantAddressIsComplete": true,
+        "applicantIsEligible": true,
+        "applicantIdentityIsConfirmed": true
+      }
+    },
+
+    {
+      "testName": "TC-26: Empty string firstName - should FAIL Rule 1",
+      "description": "firstName is empty string \"\". Must be treated as invalid, not just null-checked.",
+      "input": {
+        "applicant": {
+          "applicantFirstName": "",
+          "applicantLastName": "Doe",
+          "applicantDateOfBirth": "1990-01-01",
+          "applicantSocialSecurityNumber": "123-45-6789"
+        }
+      },
+      "expected": {
+        "applicantDataIsValid": false
+      }
+    },
+
+    {
+      "testName": "TC-27: Empty string lastName - should FAIL Rule 1",
+      "description": "lastName is empty string \"\". Must be treated as invalid.",
+      "input": {
+        "applicant": {
+          "applicantFirstName": "Jane",
+          "applicantLastName": "",
+          "applicantDateOfBirth": "1990-01-01",
+          "applicantSocialSecurityNumber": "123-45-6789"
+        }
+      },
+      "expected": {
+        "applicantDataIsValid": false
+      }
+    },
+
+    {
+      "testName": "TC-28: Empty string SSN - should FAIL Rule 1",
+      "description": "SSN is empty string \"\". Must be treated as invalid.",
+      "input": {
+        "applicant": {
+          "applicantFirstName": "Jane",
+          "applicantLastName": "Doe",
+          "applicantDateOfBirth": "1990-01-01",
+          "applicantSocialSecurityNumber": ""
+        }
+      },
+      "expected": {
+        "applicantDataIsValid": false
+      }
+    },
+
+    {
+      "testName": "TC-29: Empty string employer name - should FAIL Rule 2",
+      "description": "Employer name is empty string. Income rule should fail.",
+      "input": {
+        "applicant": {
+          "applicantAnnualIncome": 60000,
+          "applicantEmploymentStatus": "Full-Time",
+          "applicantEmployerName": ""
+        }
+      },
+      "expected": {
+        "applicantIncomeIsVerified": false
+      }
+    },
+
+    {
+      "testName": "TC-30: Empty string employment status - should FAIL Rule 2",
+      "description": "Employment status is empty string. Income rule should fail.",
+      "input": {
+        "applicant": {
+          "applicantAnnualIncome": 60000,
+          "applicantEmploymentStatus": "",
+          "applicantEmployerName": "Acme Corp"
+        }
+      },
+      "expected": {
+        "applicantIncomeIsVerified": false
+      }
+    },
+
+    {
+      "testName": "TC-31: All address fields empty strings - should FAIL Rule 3",
+      "description": "Address fields are all empty strings, not null. Rule 3 should fail.",
+      "input": {
+        "applicant": {
+          "applicantStreetAddress": "",
+          "applicantCity": "",
+          "applicantState": "",
+          "applicantZipCode": ""
+        }
+      },
+      "expected": {
+        "applicantAddressIsComplete": false
+      }
+    },
+
+    {
+      "testName": "TC-32: All identity fields empty strings - should FAIL Rule 5",
+      "description": "All 3 ID fields are empty strings, not null. Rule 5 (OR) should fail.",
+      "input": {
+        "applicant": {
+          "applicantDriversLicenseNumber": "",
+          "applicantPassportNumber": "",
+          "applicantStateIdNumber": ""
+        }
+      },
+      "expected": {
+        "applicantIdentityIsConfirmed": false
+      }
+    },
+
+    {
+      "testName": "TC-33: Mixed null and empty across all rules",
+      "description": "Every string field is either null or empty. No rule should pass.",
+      "input": {
+        "applicant": {
+          "applicantFirstName": "",
+          "applicantLastName": null,
+          "applicantDateOfBirth": null,
+          "applicantSocialSecurityNumber": "",
+          "applicantAnnualIncome": null,
+          "applicantEmploymentStatus": "",
+          "applicantEmployerName": null,
+          "applicantStreetAddress": null,
+          "applicantCity": "",
+          "applicantState": null,
+          "applicantZipCode": "",
+          "applicantAge": null,
+          "applicantCreditScore": null,
+          "applicantDriversLicenseNumber": "",
+          "applicantPassportNumber": null,
+          "applicantStateIdNumber": ""
+        }
+      },
+      "expected": {
+        "fullyValid": false,
+        "applicantDataIsValid": false,
+        "applicantIncomeIsVerified": false,
+        "applicantAddressIsComplete": false,
+        "applicantIsEligible": false,
+        "applicantIdentityIsConfirmed": false
+      }
+    },
+
+    {
+      "testName": "TC-34: One identity field empty, one valid - Rule 5 should PASS",
+      "description": "DL is empty string but passport has a value. OR logic should still pass.",
+      "input": {
+        "applicant": {
+          "applicantDriversLicenseNumber": "",
+          "applicantPassportNumber": "P-1234567",
+          "applicantStateIdNumber": ""
+        }
+      },
+      "expected": {
+        "applicantIdentityIsConfirmed": true
+      }
+    }
+  ]
+}

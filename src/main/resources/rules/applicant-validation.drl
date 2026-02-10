@@ -1,0 +1,88 @@
+package com.droolstest.rules;
+
+// ============================================================================
+// Drools Validation Rules - Converted from OPA
+// Source: sample_opa_rules.docx
+//
+// Rules verify applicant data completeness and eligibility criteria.
+// All String presence checks validate both != null AND != "" (empty string).
+// ============================================================================
+
+import com.droolstest.rules.ApplicantFact;
+import java.util.Date;
+import java.math.BigDecimal;
+
+// ─── Rule 1: Personal Data Validation ───────────────────────────────────────
+// Verifies all required personal identity fields are present and non-empty.
+
+rule "the applicant data is valid - Rule 1"
+    dialect "mvel"
+    when
+        $fact : ApplicantFact(
+            applicantFirstName != null, applicantFirstName != "",
+            applicantLastName != null, applicantLastName != "",
+            applicantDateOfBirth != null, applicantDateOfBirth != "",
+            applicantSocialSecurityNumber != null, applicantSocialSecurityNumber != ""
+        )
+    then
+        // Conclusion: the applicant data is valid
+        $fact.setApplicantDataIsValid(true);
+        $fact.addValidationResult("applicantDataIsValid", true, "the applicant data is valid");
+end
+
+rule "the applicant income is verified - Rule 2"
+    dialect "mvel"
+    when
+        $fact : ApplicantFact(
+            applicantAnnualIncome > 0,
+            applicantEmploymentStatus != null, applicantEmploymentStatus != "",
+            applicantEmployerName != null, applicantEmployerName != ""
+        )
+    then
+        // Conclusion: the applicant income is verified
+        $fact.setApplicantIncomeIsVerified(true);
+        $fact.addValidationResult("applicantIncomeIsVerified", true, "the applicant income is verified");
+end
+
+rule "the applicant address is complete - Rule 3"
+    dialect "mvel"
+    when
+        $fact : ApplicantFact(
+            applicantStreetAddress != null, applicantStreetAddress != "",
+            applicantCity != null, applicantCity != "",
+            applicantState != null, applicantState != "",
+            applicantZipCode != null, applicantZipCode != ""
+        )
+    then
+        // Conclusion: the applicant address is complete
+        $fact.setApplicantAddressIsComplete(true);
+        $fact.addValidationResult("applicantAddressIsComplete", true, "the applicant address is complete");
+end
+
+rule "the applicant is eligible - Rule 4"
+    dialect "mvel"
+    when
+        $fact : ApplicantFact(
+            applicantAge >= 18,
+            applicantCreditScore > 600,
+            applicantAnnualIncome > 25000
+        )
+    then
+        // Conclusion: the applicant is eligible
+        $fact.setApplicantIsEligible(true);
+        $fact.addValidationResult("applicantIsEligible", true, "the applicant is eligible");
+end
+
+rule "the applicant identity is confirmed - Rule 5"
+    dialect "mvel"
+    when
+        $fact : ApplicantFact(
+            (applicantDriversLicenseNumber != null && applicantDriversLicenseNumber != "") ||
+            (applicantPassportNumber != null && applicantPassportNumber != "") ||
+            (applicantStateIdNumber != null && applicantStateIdNumber != "")
+        )
+    then
+        // Conclusion: the applicant identity is confirmed
+        $fact.setApplicantIdentityIsConfirmed(true);
+        $fact.addValidationResult("applicantIdentityIsConfirmed", true, "the applicant identity is confirmed");
+end
